@@ -47,7 +47,22 @@ const TRAINING_LINKS = {
     "English": "https://1drv.ms/p/c/c073f729a3415e41/EUp4ic7BLQhCgCyGWHZDKkMBAn3zlQib_7bAx5WSBJ4mgA?e=rL4MzG",
     "العربية": "https://1drv.ms/p/c/c073f729a3415e41/EQaSwdQY3xRGomNd0SLIr_oBOA7Ew6UvjJwUHRFMf5UHJA?e=dtlAvL",
     "中文": "https://1drv.ms/p/c/c073f729a3415e41/EYAR1LANQAJFnO2QPMHmkB8Bu6DM5D9ftVgcK7Nb0vswyA?e=sZRhnB"
-  }
+  },
+  "GBVH": {
+    "English": "https://1drv.ms/p/c/c073f729a3415e41/EceDlg2fpW9Jqgw5d-WAFf4BFEy1HWKpIPkJje38T6tefg?e=ZGz2et",
+    "العربية": "https://1drv.ms/p/c/c073f729a3415e41/EYp-urmjCNpAnMv1qR8c0_8B5hye1eqwqNt27GTIiU171A?e=szp1ae",
+    "中文": "https://1drv.ms/p/c/c073f729a3415e41/EbWd7fQDirJFqkObKgFMBrYB7mZek87KxIn6-0wgM7Abhg?e=chFwWp"
+    },
+  "Code of Conduct": {
+    "English": "https://1drv.ms/p/c/c073f729a3415e41/EWjn5Uul-T5KucE643esENgBcxnPozbB-Ywb_4d-Zj95qg?e=FMneBe",
+    "العربية": "https://1drv.ms/p/c/c073f729a3415e41/EWz_H8bsmUpGrL-5DrP2BH4BT-GbAunb9sYpZVol8fNjgQ?e=rcqYeI",
+    "中文": "https://1drv.ms/p/c/c073f729a3415e41/EWpAqpuYAapJoRk2duQItEMBlUYjdM_PKX8exe3IvzOTaA?e=FGfdnt"
+    },
+  "Griveance Mechanism": {
+    "English": "https://1drv.ms/p/c/c073f729a3415e41/EUQwMvizqoZGtyFZZB5tW9sB7CUGBPeARcGSugHje3vdwg?e=6bEGIh",
+    "العربية": "https://1drv.ms/p/c/c073f729a3415e41/Ed4gnWbQsNFMoiDJkjfw9xsBZV0TIsI0M1SGTyQCY71Uwg?e=4Mjy6X",
+    "中文": "https://1drv.ms/p/c/c073f729a3415e41/EbE1mzoKXl1Eh95EmFnPU-IBUyJGV2_ojDnW_E69mniy-w?e=1bgV00"
+    },
 };
 
 /* ==== Tabs ==== */
