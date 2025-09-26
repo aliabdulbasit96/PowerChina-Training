@@ -123,16 +123,15 @@ form.addEventListener('submit', async (e)=>{
   payload.append('trainingLink', (TRAINING_LINKS[topic]||{})[lang] || '');
   payload.append('timestamp', new Date().toISOString());
 
-  try{
-    const res = await fetch(SCRIPT_URL, { method:'POST', body: payload });
-    if(!res.ok) throw new Error('Network error');
-    statusEl.textContent = 'Registration submitted.';
-  }catch(err){
-    // Fallback local
-    const obj = Object.fromEntries(new URLSearchParams(payload).entries());
-    saveLocal(obj);
-    statusEl.textContent = 'Saved locally (offline).';
-  }
+  try {
+  const res = await fetch(SCRIPT_URL, { method:'POST', body: payload });
+  if(!res.ok) throw new Error('Network error');
+  statusEl.textContent = '✅ Registration submitted successfully to Google Sheet.';
+} catch(err) {
+  statusEl.textContent = '⚠️ Failed to submit. Please check your internet or Google Script.';
+  console.error(err);
+}
+
   form.reset();
 });
 
@@ -164,12 +163,13 @@ async function loadDashboard(){
 
   tbody.innerHTML = '<tr><td colspan=\"6\">Loading...</td></tr>';
   let data;
-  try{
-    const res = await fetch(SCRIPT_URL + '?mode=read');
-    data = await res.json();
-  }catch(e){
-    // Build from local storage
-    const arr = JSON.parse(localStorage.getItem('pc_registrations')||'[]');
+ try {
+  const res = await fetch(SCRIPT_URL + '?mode=read');
+  data = await res.json();
+} catch(e) {
+  console.error("⚠️ Failed to fetch dashboard data from Google Sheets", e);
+  return;
+}
     const companies = new Set(arr.map(r=>r.company||r.Company||r['Company Name']||''));
     const today = new Date().toISOString().slice(0,10);
     kpiTotal.textContent = arr.length;
@@ -211,9 +211,28 @@ async function loadDashboard(){
 }
 
 /* ==== Export local data as CSV ==== */
-document.getElementById('btnExport').addEventListener('click', ()=>{
-  const arr = JSON.parse(localStorage.getItem('pc_registrations')||'[]');
-  if(!arr.length){ alert('No local data to export.'); return; }
+document.getElementById('btnExport').addEventListener('click', async ()=>{
+  try {
+    const res = await fetch(SCRIPT_URL + '?mode=read');
+    const data = await res.json();
+    const arr = data?.rows || [];
+    if(!arr.length){ alert('No data to export.'); return; }
+
+    const cols = Object.keys(arr[0]);
+    const csv = [cols.join(',')].concat(
+      arr.map(o => cols.map(c => (' '+(o[c]??'')).replace(/\"/g,'\"\"')).map(v => `\"${v}\"`).join(','))
+    ).join('\\n');
+
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'registrations.csv'; a.click();
+    URL.revokeObjectURL(url);
+  } catch(err) {
+    alert('⚠️ Failed to export from Google Sheet.');
+    console.error(err);
+  }
+});
   const cols = Object.keys(arr[0]);
   const csv = [cols.join(',')].concat(arr.map(o=>cols.map(c=>(''+(o[c]??'')).replace(/\"/g,'\"\"')).map(v=>`\"${v}\"`).join(','))).join('\n');
   const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
