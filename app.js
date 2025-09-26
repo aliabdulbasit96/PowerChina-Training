@@ -1,6 +1,6 @@
 
 /* ==== Config ==== */
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx5KCwFwS758NABsn-Pos2SP-Pu6uijAMWgvFtXRYx6r3c3GUYWgYYUVraDLtIxSEMf/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwwM315NzkoTvt9FWvThCnZTLFs0Dj066b1-JVngBW9BtkGNkxN4a0FeIkRoLRE7Q7qfw/exec";
 const DASHBOARD_PASSWORD = "PowerChina2025";
 const TRAINING_LINKS = {
   "Environmental Manual": {
