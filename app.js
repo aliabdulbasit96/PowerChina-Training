@@ -1,6 +1,6 @@
 
 /* ==== Config ==== */
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwwM315NzkoTvt9FWvThCnZTLFs0Dj066b1-JVngBW9BtkGNkxN4a0FeIkRoLRE7Q7qfw/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx5KCwFwS758NABsn-Pos2SP-Pu6uijAMWgvFtXRYx6r3c3GUYWgYYUVraDLtIxSEMf/exec";
 const DASHBOARD_PASSWORD = "PowerChina2025";
 const TRAINING_LINKS = {
   "Environmental Manual": {
@@ -88,10 +88,7 @@ tabDashboard.addEventListener('click', () => {
 /* ==== Populate Topics ==== */
 const topicSel = document.getElementById('topic');
 Object.keys(TRAINING_LINKS).forEach(t => {
-  const opt = document.createElement('option'); 
-  opt.value = t; 
-  opt.textContent = t; 
-  topicSel.appendChild(opt);
+  const opt = document.createElement('option'); opt.value = t; opt.textContent = t; topicSel.appendChild(opt);
 });
 
 /* ==== Start Training ==== */
@@ -108,63 +105,55 @@ startBtn.addEventListener('click', () => {
   else alert('Please select language and topic to start training.');
 });
 
-/* ==== Registration Submit (Google Sheets only) ==== */
+/* ==== Registration Submit (to GAS) with fallback local storage ==== */
 const form = document.getElementById('trainingForm');
 const statusEl = document.getElementById('formStatus');
-
+function saveLocal(entry){
+  const key = 'pc_registrations';
+  const arr = JSON.parse(localStorage.getItem(key) || '[]');
+  arr.push(entry);
+  localStorage.setItem(key, JSON.stringify(arr));
+}
 form.addEventListener('submit', async (e)=>{
   e.preventDefault();
   statusEl.textContent = 'Submitting...';
   const fd = new FormData(form);
-  const topic = fd.get('topic'); 
-  const lang = fd.get('language');
+  const topic = fd.get('topic'); const lang = fd.get('language');
   const payload = new URLSearchParams(fd);
   payload.append('trainingLink', (TRAINING_LINKS[topic]||{})[lang] || '');
   payload.append('timestamp', new Date().toISOString());
 
-  try {
+  try{
     const res = await fetch(SCRIPT_URL, { method:'POST', body: payload });
     if(!res.ok) throw new Error('Network error');
-    statusEl.textContent = '✅ Registration submitted successfully to Google Sheet.';
-  } catch(err) {
-    statusEl.textContent = '⚠️ Failed to submit. Please check your internet or Google Script.';
-    console.error(err);
+    statusEl.textContent = 'Registration submitted.';
+  }catch(err){
+    // Fallback local
+    const obj = Object.fromEntries(new URLSearchParams(payload).entries());
+    saveLocal(obj);
+    statusEl.textContent = 'Saved locally (offline).';
   }
-
   form.reset();
 });
 
-/* ==== Dashboard (reads from Google Sheets only) ==== */
+/* ==== Dashboard (reads from GAS ?mode=read, otherwise uses local) ==== */
 let charts = {}
-function destroyIfExists(id){ 
-  if(charts[id]){ charts[id].destroy(); delete charts[id]; } 
-}
+function destroyIfExists(id){ if(charts[id]){ charts[id].destroy(); delete charts[id]; } }
+
 function drawPie(id, items){
   destroyIfExists(id);
   const ctx = document.getElementById(id).getContext('2d');
-  charts[id] = new Chart(ctx, { 
-    type:'pie', 
-    data:{ labels: items.map(i=>i.label), datasets:[{ data: items.map(i=>i.value) }] }, 
-    options:{ responsive:true } 
-  });
+  charts[id] = new Chart(ctx, { type:'pie', data:{ labels: items.map(i=>i.label), datasets:[{ data: items.map(i=>i.value) }] }, options:{ responsive:true } });
 }
 function drawBar(id, items){
   destroyIfExists(id);
   const ctx = document.getElementById(id).getContext('2d');
-  charts[id] = new Chart(ctx, { 
-    type:'bar', 
-    data:{ labels: items.map(i=>i.label), datasets:[{ data: items.map(i=>i.value) }] }, 
-    options:{ responsive:true, scales:{ y:{ beginAtZero:true } } } 
-  });
+  charts[id] = new Chart(ctx, { type:'bar', data:{ labels: items.map(i=>i.label), datasets:[{ data: items.map(i=>i.value) }] }, options:{ responsive:true, scales:{ y:{ beginAtZero:true } } } });
 }
 function drawLine(id, items){
   destroyIfExists(id);
   const ctx = document.getElementById(id).getContext('2d');
-  charts[id] = new Chart(ctx, { 
-    type:'line', 
-    data:{ labels: items.map(i=>i.label), datasets:[{ data: items.map(i=>i.value), fill:false }] }, 
-    options:{ responsive:true, scales:{ y:{ beginAtZero:true } } } 
-  });
+  charts[id] = new Chart(ctx, { type:'line', data:{ labels: items.map(i=>i.label), datasets:[{ data: items.map(i=>i.value), fill:false }] }, options:{ responsive:true, scales:{ y:{ beginAtZero:true } } } });
 }
 
 async function loadDashboard(){
@@ -173,18 +162,38 @@ async function loadDashboard(){
   const kpiCompanies = document.getElementById('kpiCompanies');
   const tbody = document.getElementById('tableBody');
 
-  tbody.innerHTML = '<tr><td colspan="6">Loading...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan=\"6\">Loading...</td></tr>';
   let data;
-  try {
+  try{
     const res = await fetch(SCRIPT_URL + '?mode=read');
     data = await res.json();
-  } catch(e) {
-    console.error("⚠️ Failed to fetch dashboard data from Google Sheets", e);
-    tbody.innerHTML = '<tr><td colspan="6">⚠️ Failed to load data</td></tr>';
+  }catch(e){
+    // Build from local storage
+    const arr = JSON.parse(localStorage.getItem('pc_registrations')||'[]');
+    const companies = new Set(arr.map(r=>r.company||r.Company||r['Company Name']||''));
+    const today = new Date().toISOString().slice(0,10);
+    kpiTotal.textContent = arr.length;
+    kpiToday.textContent = arr.filter(r=>(r.timestamp||'').slice(0,10)===today).length;
+    kpiCompanies.textContent = Array.from(companies).filter(Boolean).length;
+
+    tbody.innerHTML = '';
+    arr.forEach((r,i)=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${i+1}</td><td>${r.name||''}</td><td>${r.company||''}</td><td>${r.jobTitle||''}</td><td>${r.language||''}</td><td>${r.topic||''}</td>`;
+      tbody.appendChild(tr);
+    });
+
+    // Simple charts from local
+    const langMap = {}; arr.forEach(r=>{ langMap[r.language] = (langMap[r.language]||0)+1; });
+    const topicMap = {}; arr.forEach(r=>{ topicMap[r.topic] = (topicMap[r.topic]||0)+1; });
+    const monthlyMap = {}; arr.forEach(r=>{ const m=(r.timestamp||'').slice(0,7); if(m) monthlyMap[m]=(monthlyMap[m]||0)+1; });
+    drawPie('chartLanguages', Object.entries(langMap).map(([label,value])=>({label,value})));
+    drawBar('chartTopics', Object.entries(topicMap).map(([label,value])=>({label,value})));
+    drawLine('chartMonthly', Object.entries(monthlyMap).map(([label,value])=>({label,value})));
     return;
   }
 
-  // Expect structure: totals, languages, topics, monthly, rows
+  // If fetched from GAS, expect structure: totals, languages, topics, monthly, rows
   kpiTotal.textContent = data?.totals?.total ?? 0;
   kpiToday.textContent = data?.totals?.today ?? 0;
   kpiCompanies.textContent = data?.totals?.companies ?? 0;
@@ -201,28 +210,15 @@ async function loadDashboard(){
   drawLine('chartMonthly', data.monthly||[]);
 }
 
-/* ==== Export data as CSV from Google Sheets ==== */
-document.getElementById('btnExport').addEventListener('click', async ()=>{
-  try {
-    const res = await fetch(SCRIPT_URL + '?mode=read');
-    const data = await res.json();
-    const arr = data?.rows || [];
-    if(!arr.length){ alert('No data to export.'); return; }
-
-    const cols = Object.keys(arr[0]);
-    const csv = [cols.join(',')].concat(
-      arr.map(o => cols.map(c => (''+(o[c]??'')).replace(/"/g,'""')).map(v => `"${v}"`).join(','))
-    ).join('\n');
-
-    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; 
-    a.download = 'registrations.csv'; 
-    a.click();
-    URL.revokeObjectURL(url);
-  } catch(err) {
-    alert('⚠️ Failed to export from Google Sheet.');
-    console.error(err);
-  }
+/* ==== Export local data as CSV ==== */
+document.getElementById('btnExport').addEventListener('click', ()=>{
+  const arr = JSON.parse(localStorage.getItem('pc_registrations')||'[]');
+  if(!arr.length){ alert('No local data to export.'); return; }
+  const cols = Object.keys(arr[0]);
+  const csv = [cols.join(',')].concat(arr.map(o=>cols.map(c=>(''+(o[c]??'')).replace(/\"/g,'\"\"')).map(v=>`\"${v}\"`).join(','))).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'registrations.csv'; a.click();
+  URL.revokeObjectURL(url);
 });
