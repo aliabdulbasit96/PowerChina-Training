@@ -1,6 +1,6 @@
 
 /* ==== Config ==== */
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx5KCwFwS758NABsn-Pos2SP-Pu6uijAMWgvFtXRYx6r3c3GUYWgYYUVraDLtIxSEMf/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzrny_vMgw0gGp7a5LsJas4RZ4UnvCKlC_XuiB-BGsVuUz2gch2vpjDLS4hnyA-U46V/exec";
 const DASHBOARD_PASSWORD = "PowerChina2025";
 const TRAINING_LINKS = {
   "Environmental Manual": {
@@ -49,19 +49,24 @@ const TRAINING_LINKS = {
     "中文": "https://1drv.ms/p/c/c073f729a3415e41/EYAR1LANQAJFnO2QPMHmkB8Bu6DM5D9ftVgcK7Nb0vswyA?e=sZRhnB"
   },
   "GBVH": {
-    "English": "https://1drv.ms/p/c/c073f729a3415e41/EceDlg2fpW9Jqgw5d-WAFf4BFEy1HWKpIPkJje38T6tefg?e=ZGz2et",
-    "العربية": "https://1drv.ms/p/c/c073f729a3415e41/EYp-urmjCNpAnMv1qR8c0_8B5hye1eqwqNt27GTIiU171A?e=szp1ae",
-    "中文": "https://1drv.ms/p/c/c073f729a3415e41/EbWd7fQDirJFqkObKgFMBrYB7mZek87KxIn6-0wgM7Abhg?e=chFwWp"
+    "English": "https://1drv.ms/p/c/c073f729a3415e41/EceDlg2fpW9Jqgw5d-WAFf4BFEy1HWKpIPkJje38T6tefg?e=1oMxbX",
+    "العربية": "https://1drv.ms/p/c/c073f729a3415e41/EYp-urmjCNpAnMv1qR8c0_8B5hye1eqwqNt27GTIiU171A?e=Y7DGNx",
+    "中文": "https://1drv.ms/p/c/c073f729a3415e41/EbWd7fQDirJFqkObKgFMBrYB7mZek87KxIn6-0wgM7Abhg?e=ra6C58"
     },
   "Code of Conduct": {
     "English": "https://1drv.ms/p/c/c073f729a3415e41/EWjn5Uul-T5KucE643esENgBcxnPozbB-Ywb_4d-Zj95qg?e=FMneBe",
-    "العربية": "https://1drv.ms/p/c/c073f729a3415e41/EWz_H8bsmUpGrL-5DrP2BH4BT-GbAunb9sYpZVol8fNjgQ?e=rcqYeI",
-    "中文": "https://1drv.ms/p/c/c073f729a3415e41/EWpAqpuYAapJoRk2duQItEMBlUYjdM_PKX8exe3IvzOTaA?e=FGfdnt"
+    "العربية": "https://1drv.ms/p/c/c073f729a3415e41/EVz4cEMwB2pPr_6U9pAELlEBxYeEmJsXe5Oi9Mzi7NEXfA?e=V8bhOg",
+    "中文": "https://1drv.ms/p/c/c073f729a3415e41/Ee-U8FDZTG9EgMFNDyaCPbUB7FLmC-73PcRy-WN1eQNDqA?e=umXj4a"
     },
-  "Griveance Mechanism": {
-    "English": "https://1drv.ms/p/c/c073f729a3415e41/EUQwMvizqoZGtyFZZB5tW9sB7CUGBPeARcGSugHje3vdwg?e=6bEGIh",
-    "العربية": "https://1drv.ms/p/c/c073f729a3415e41/Ed4gnWbQsNFMoiDJkjfw9xsBZV0TIsI0M1SGTyQCY71Uwg?e=4Mjy6X",
-    "中文": "https://1drv.ms/p/c/c073f729a3415e41/EbE1mzoKXl1Eh95EmFnPU-IBUyJGV2_ojDnW_E69mniy-w?e=1bgV00"
+  "Compliant Management": {
+    "English": "https://1drv.ms/p/c/c073f729a3415e41/EaPMhkhI-ytLowWxDU91LJIBnB3wlAm92iVEz71jrPEAiA?e=DMXgCu",
+    "العربية": "https://1drv.ms/p/c/c073f729a3415e41/EbMEkcuNWD1Bqwyj8WkhcP0BrWpUpPS3Be0JFPK7XgFwFg?e=SkhTS4",
+    "中文": "https://1drv.ms/p/c/c073f729a3415e41/ETTXMriP71BLma-HrW-EviUBiBP1Os1KMwpJpyPqX-DsJQ?e=VhcV7S"
+    },
+  "Labors Rights and Duities": {
+    "English": "https://1drv.ms/p/c/c073f729a3415e41/EbRqu4_ruPJOpQqV1u68SqMBmmPXq5gFWl9xHrYubiOtug?e=Loq7ig",
+    "العربية": "https://1drv.ms/p/c/c073f729a3415e41/Ea-JPoOV88VLgblDKHJU7TYBdy-XMJIzu_JVf-62nJkBQw?e=I5hPP8",
+    "中文": "https://1drv.ms/p/c/c073f729a3415e41/EaaGqUZlK65GlZzBGVhLamwBP_r7NNAn2tgy8gOy4x194A?e=rUyIdc"
     },
 };
 
